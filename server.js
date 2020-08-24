@@ -32,25 +32,33 @@ var listener = app.listen(process.env.PORT, function () {
 });
 
 
-app.get('/api/timestamp/:date?', function(req, res){
-  // creating a date object
-  var date = new Date();
+app.get("/api/timestamp/", function(req, res){
+  res.json({ unix: Date.now(), utc: Date() });
+});
 
-  // if the given parameter is a number (timestamp)
-  if(/^\d*$/.test(req.params.date)){
-    date.setTime(req.params.date);
-  } 
+app.get('/api/timestamp/:date_string', function(req, res){
+  let fecha = req.params.date_string;
 
-  // else we just create a new date parsing the string given
-  else {
-    date = new Date(req.params.date);
+  if(/^\d{5,}$/.test(fecha)){
+    utcDate = parseInt(fecha);
+    res.send({
+    "unix": fecha,
+    "utc": new Date(utcDate).toUTCString()
+  });
+  }
+  else{
+    let objetoFecha = new Date(fecha);
+
+    if(objetoFecha.toString() !== "Invalid Date"){
+      res.send({
+      "unix": objetoFecha.valueOf(),
+      "utc": objetoFecha.toUTCString()
+      });
+    }/*
+    else{
+      res.json(error: "Invalid Date");
+      
+    }*/
   }
 
-  // if the date is invalid
-  if(!date.getTime()) res.send({error: "Invalid Date"});
-  // else, we send the object with two members (unix and natural)
-  else res.send({
-    "unix": date.getTime(),
-    "utc": date.toUTCString()
-  })
 });
