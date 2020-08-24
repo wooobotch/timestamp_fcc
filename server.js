@@ -41,7 +41,7 @@ app.get('/api/timestamp/:date_string', function(req, res){
 
   if(/^\d{5,}$/.test(fecha)){
     utcDate = parseInt(fecha);
-    res.send({
+    res.json({
     "unix": fecha,
     "utc": new Date(utcDate).toUTCString()
   });
@@ -50,15 +50,14 @@ app.get('/api/timestamp/:date_string', function(req, res){
     let objetoFecha = new Date(fecha);
 
     if(objetoFecha.toString() !== "Invalid Date"){
-      res.send({
+      res.json({
       "unix": objetoFecha.valueOf(),
       "utc": objetoFecha.toUTCString()
       });
-    }/*
+    }
     else{
-      res.json(error: "Invalid Date");
-      
-    }*/
+      res.json({error: "Invalid Date"});
+    }
   }
 
 });
